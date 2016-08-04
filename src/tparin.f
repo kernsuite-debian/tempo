@@ -94,7 +94,7 @@ c     default values of parameters
 
       call getenv ('TEMPO',path)
       lpth = index(path,' ')-1
-      hlpfile = path(1:lpth)//'/tempo.hlp'	
+      hlpfile = '/usr/share/tempo/tempo.hlp'	
 
 
       narg = iargc()
