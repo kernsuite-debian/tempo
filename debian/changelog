@@ -1,3 +1,9 @@
+tempo (0+git20160709-1kern1) xenial; urgency=medium
+
+  * fix path to help file
+
+ -- Gijs Molenaar (launchpad ppa build key) <gijs@pythonic.nl>  Thu, 04 Aug 2016 10:45:36 +0200
+
 tempo (0+git20160709-1) xenial; urgency=medium
 
   * Initial release (Closes: #nnnn)
