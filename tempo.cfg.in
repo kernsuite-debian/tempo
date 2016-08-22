@@ -1,5 +1,5 @@
-CLKDIR       @abs_top_srcdir@/clock/
-PARDIR       @abs_top_srcdir@/tzpar/
+CLKDIR       /usr/share/tempo/clock/
+PARDIR       /usr/share/tempo/tzpar/
 TZDIR        ./
 OBS_NIST     time.dat
 NIST_UTC     utccorr.tot                     UTC(NIST) to UTC
@@ -10,13 +10,13 @@ NIST_BIPM    bipmnist.15.extrap              UTC(NIST) to TT(BIPM)
 NIST_PTB     ptbnist.90                      UTC(NIST) to UTC(PTB)
 NIST_AT1     at1nist.90                      UTC(NIST) to AT1
 UT1          ut1.dat                         UT1 - UT
-EPHDIR       @abs_top_srcdir@/ephem/
+EPHDIR       /usr/share/tempo/ephem/
 EPHFILE      DE200.1950.2050 --eph=DE200 --endian=big
 EPHFILE      DE405.1950.2050 --eph=DE405 --endian=big
 EPHFILE      DE418.1950.2050 --eph=DE418 --endian=big
 EPHFILE      DE421.1950.2050 --eph=DE421 --endian=little
 EPHFILE      DE430.1950.2050 --eph=DE430 --endian=little
 TDBFILE      TDB.1950.2050
-OBSYS        @abs_top_srcdir@/obsys.dat      Observatory list
+OBSYS        /usr/share/tempo/obsys.dat      Observatory list
 TZTOT        tztot.dat
 TZSITE       1

@@ -185,7 +185,7 @@ c  Get command-line arguments
 
 c  Parse tempo.cfg file
 
- 	cfgpath=path(1:lpth)//'/tempo.cfg'
+ 	cfgpath='/etc/tempo/tempo.cfg'
         call cfgin(cfgpath,ut1file,obsyfile,tdbfile)  
 
 	nfl=index(infile,' ')-1

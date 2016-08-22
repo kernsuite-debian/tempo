@@ -94,7 +94,7 @@ c     default values of parameters
 
       call getenv ('TEMPO',path)
       lpth = index(path,' ')-1
-      hlpfile = path(1:lpth)//'/tempo.hlp'	
+      hlpfile = '/usr/share/tempo/tempo.hlp'	
 
 
       narg = iargc()
@@ -124,7 +124,7 @@ c     default values of parameters
               path = getparm(s,i,ii,iarg,narg)
               if (path.eq.'') goto 9999 ! error
               lpth = index(path,' ')-1
-              hlpfile = path(1:lpth)//'/tempo.hlp'
+              hlpfile = '/usr/share/tempo/tempo.hlp'
 	    else if (s(i:i).eq.'D') then
 	      ldesign = .true.
 	      open(37,file='design.tmp',form='unformatted',
