@@ -6,4 +6,4 @@
 override_dh_auto_clean:
 	dh_auto_clean
 	rm -rf util/print_resid/Makefile
-
+	rm -rf .pc

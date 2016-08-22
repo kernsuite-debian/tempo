@@ -1,1 +1,6 @@
 tempo.hlp usr/share/tempo
+clock usr/share/tempo
+tzpar usr/share/tempo
+ephem usr/share/tempo
+obsys.dat usr/share/tempo
+tempo.cfg etc/tempo
