@@ -257,6 +257,7 @@ c Compute interplanetary effect assuming 10 e-/cc at 1 AU
          THETH = DACOS(CTH)
          if (freqhz.le.1.d-1) then
            TDIS = 0D0
+           txmx = 0.d0
          else
            if (SSDMFLAG.eq.0) then
              PLDIS = 0
@@ -271,6 +272,21 @@ C     freq-dependent arrival time shifts
            do 206 i=1,NFDMAX
 	     tdis = tdis + fdcof(i) * (log(freqf*1.0d-9)**i)
  206       continue
+
+
+C     calculate xmx delays
+           txmx = 0.d0
+           do i = 1, nxmx
+             if (      xmxuse(i)
+     +        .and.(xmxf1(i).lt.0.d0 .or. freqf.ge.xmxf1(i))
+     +        .and.(xmxf2(i).lt.0.d0 .or. freqf.le.xmxf2(i))
+     +        .and.(xmxr1(i).lt.0.d0 .or. nmjdu+fmjdu.ge.xmxr1(i))
+     +        .and.(xmxr2(i).lt.0.d0 .or. nmjdu+fmjdu.le.xmxr2(i)))then
+                txmx = txmx + xmx(i)*(freqf/1.0d6/xmxfrq0)**xmxexp(i)
+c               print *,"inside",n,nmjdu,i,xmx(i),txmx
+             endif
+           enddo
+
          
          endif
 
@@ -280,11 +296,10 @@ c           No, because this routine is not called if nsite<0
         
          nmjdc=nmjdu
 
-         dt_SSB = bclt-TDIS-dt_shapiro      
+         dt_SSB = bclt-TDIS-dt_shapiro-txmx
          
          if(DABS(dt_SSB-dt_SSB_old).gt.1.0d-10) goto 201
-
-         fmjdc = fmjdu+(ETAT+ATUT+bclt-TDIS-dt_shapiro)/SECDAY
+         fmjdc = fmjdu+(ETAT+ATUT+bclt-TDIS-dt_shapiro-txmx)/SECDAY
       endif
 
       if(fmjdc.ge.1.d0)then
@@ -297,6 +312,7 @@ c           No, because this routine is not called if nsite<0
 
       if (phisun.lt.phimin) wflag = 0
       if (phisunout) write (38,fmt='(f7.3)') phisun
+      if (dopplerout) write (41,fmt='(e16.9)') voverc
 
 C     SET UP NECESSARY PARAMETERS FOR TEMPO: (JMW)
 

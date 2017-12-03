@@ -12,6 +12,7 @@ c       NXDOTMAX maximum number of orbital size (x) derivatives, orbit 1
 c       NEDOTMAX maximum number of orbital size (x) derivatives, orbit 1
 c       NOMDOTMAX maximum number of orbital size (x) derivatives, orbit 1
 c       NFBJMAX  paximum number of orbital period jumps, orbit 1
+c       NOBSMAX  maximum number of observatories
 
 c                parameters are in following order:
 c       1       to NPAR1  sixty basic parameters
@@ -25,7 +26,8 @@ c       NPAR7+1 to NPAR8  Orbital E derivatives (2 to NEDOTMAX)
 c       NPAR8+1 to NPAR9  Orbital OM derivatives (2 to NOMDOTMAX)
 c       NPAR9+1 to NPAR10 DM derivatives (1 to NDMCOFMAX)
 c       NPAR10+1 to NPAR11 Non-DM freq-dependent terms (1 to NFDMAX)
-c       NPAR11+1 to NPA   Non-DM freq-dependent terms above F2 (3 to NFMAX) 
+c       NPAR11+1 to NPA12 Non-DM freq-dependent terms above F2 (3 to NFMAX) 
+c       NPAR12+1 to NPA   XMX values and spectral indexes
 c       NPA      total number of parameters (basic+glitch+jump)
 c       NPAP1    total number of parameters plus one
 c       NBUFDEF  default size of virtual memory buffer (why 35*NPTSMAX???)
@@ -36,7 +38,7 @@ c       NUTMAX   max number of ut1 corrections
 c       NFLAGERR max number of flag-based EFAC/EQUAD
 
 	parameter (NPTSDEF=60000)
-	parameter (NPT=100000)
+	parameter (NPT=200000)
         parameter (NFMAX=20)
 	parameter (NGLT=9,NGLP=5)
 	parameter (NJUMP=250)
@@ -46,6 +48,7 @@ c       NFLAGERR max number of flag-based EFAC/EQUAD
 	parameter (NOMDOTMAX=10)
         parameter (NFBJMAX=120)
         parameter (NDMXMAX=500)
+        parameter (NXMXMAX=500)
         parameter (NDMCOFMAX=30)
         parameter (NFDMAX=10)
         parameter (NPAR1=60)
@@ -59,10 +62,12 @@ c       NFLAGERR max number of flag-based EFAC/EQUAD
         parameter (NPAR9=NPAR8+(NOMDOTMAX-1))
         parameter (NPAR10=NPAR9+NDMCOFMAX)
         parameter (NPAR11=NPAR10+NFDMAX)
-        parameter (NPA=NPAR11+NFMAX-2)
+        parameter (NPAR12=NPAR11+NFMAX-2)
+        parameter (NPA=NPAR12+2*NXMXMAX)
         parameter (NPAP1=NPA+1)
 	parameter (NPARDEF=28)
         parameter (NBOOTMAX=1024)
-        parameter (NTZMAX=1000,NCLKMAX=20,NEPHMAX=5,NUTMAX=6000)
+        parameter (NTZMAX=1000,NCLKMAX=40,NEPHMAX=10,NUTMAX=6000)
         parameter (NTZARR=1500)
         parameter (NFLAGERR=64)
+        parameter (NOBSMAX=500)

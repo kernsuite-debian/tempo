@@ -42,7 +42,8 @@ c          parse TOA into int+fracion (code from arrtim.f; see notes there)
 c       store reference TOA line
         stflag = .true.
         stntoa = 1
-        stnsite(stntoa) = sitea2n(tzrsite)
+        ntzrsite = sitea2n(tzrsite)
+        stnsite(stntoa) = ntzrsite
         stfrq(stntoa) = tzrfrq
         stnmjd(stntoa) = ntzrmjd
         stfmjd(stntoa) = ftzrmjd

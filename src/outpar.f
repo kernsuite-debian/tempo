@@ -16,6 +16,9 @@ c      $Id$
       include 'eph.h'
       include 'tz.h'
 
+      character*1 siten2a  ! external function
+      character*2 siten2b  ! external function
+
       c1=360.d0/TWOPI
       c=360.*3600./TWOPI
       cc=1.d-9*c*365.25*8.64d7
@@ -274,6 +277,24 @@ c work correctly in tempo2:
 	endif
       enddo
 
+      if (usexmxfrq0) then
+         write (71, 1201) xmxfrq0
+ 1201    format('XMXFRQ0',12x,f16.5)
+      endif
+      do i= 1, nxmx
+        if (xmxuse(i)) then
+          write (71,1202) i,xmx(i),nfit(NPAR12+2*i-1),ferr(NPAR12+2*i-1)
+ 1202     format('XMX_',i4.4,1p,d18.8,i3,d20.8)
+          write (71,1203) i,xmxexp(i),nfit(NPAR12+2*i),ferr(NPAR12+2*i)
+ 1203     format('XMXEXP_',i4.4,1p,d18.8,i3,d20.8)
+          if (xmxr1(i).gt.0.) write(71,1204) "R1",i,xmxr1(i)
+          if (xmxr2(i).gt.0.) write(71,1204) "R2",i,xmxr2(i)
+          if (xmxf1(i).gt.0.) write(71,1204) "F1",i,xmxf1(i)
+          if (xmxf2(i).gt.0.) write(71,1204) "F2",i,xmxf2(i)
+ 1204     format('XMX',a2,'_',i4.4,f16.5)
+        endif
+      enddo
+
       write(71,'(''SOLARN0'',f19.2)')solarn0
       write(71,'(''EPHEM'',15x,a)')ephfile(nephem)(1:5)
       if (eclcon.ne."DEFAULT") then
@@ -301,7 +322,11 @@ c tempo2-compatibility:
       endif
       write(71,'(''TZRMJD '',i5,f16.14)')nx,fx
       write(71,'(''TZRFRQ '',f19.3)')tzrfrq
-      write(71,'(''TZRSITE '',17x,a)')tzrsite
+      if (nsite.le.0 .or. siten2b(ntzrsite).eq.'--') then
+        write(71,'(''TZRSITE '',17x,a)')siten2a(ntzrsite)
+      else
+        write(71,'(''TZRSITE '',17x,a)')siten2b(ntzrsite)
+      endif
       write(71,'(''MODE'',i22)')fitmode
       if(nprnt.gt.0)write(71,'(''NPRNT'',i21)')nprnt
       if(nits.gt.0)write(71,'(''NITS'',i22)')nits

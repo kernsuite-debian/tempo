@@ -42,6 +42,8 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	include 'tz.h'
         include 'toa.h'
         integer sitea2n ! external function
+        character*1 siten2a ! external function
+        character*2 siten2b ! external function
         character*80 getvalue ! external function
 
 	common /CONST/ PI,TWOPI,SECDAY,CONVD,CONVS,AULTSC,VELC,EMRAT,OBLQ,
@@ -51,8 +53,6 @@ C  DJN 18-Aug-92  Allow up to 36 sites
      +    tdis,bclt
 	common/obsp/ site(3),pos(3),freqhz,bval,sitvel(3)
 	data first/.true./,card2/'JUMP'/,idum/-1/
-
-        character*1 siten2a  ! external function
 
 	offset=.true.
 	jdcatc=.false.
@@ -244,9 +244,9 @@ c blank out temp flag variable
           rawflags = ''
 
           if(nfmt.eq.0) then				! Princeton format
-
             read(card,10500) asite,rfrq,amjd,aterr,ddm
 10500       format(a1,14x,f9.0,a20,a9,15x,f10.0)
+            nsite = sitea2n(asite)
 
             ! Clean up MJD and separate out integer and
             ! fractional parts.  It can have either of these forms:
@@ -278,17 +278,19 @@ c blank out temp flag variable
             read(card,1051) rfrq,nfmjd,ffmjd,phs,terr,asite
  1051       format(25x,f9.0,i7,f14.13,f8.6,f8.1,8x,a1)
             ffmjd=ffmjd+phs*p0/86400.d0
+            nsite = sitea2n(asite)
             
           else if(nfmt.eq.2) then ! ITOAF format
             read(card,1052) nfmjd,ffmjd,terr,rfrq,ddm,bsite,comment
  1052       format(9x,i5,f14.13,f6.2,f11.4,f10.6,2x,a2,2x,a8)
+            nsite = sitea2n(bsite)
             asite=' '
-            do iobs=1,36
-              if(bsite.eq.obskey(iobs)(4:5))then
-		asite=obskey(iobs)(1:1)
-		goto 56
-              endif
-            enddo
+            if (nsite.eq.-2) then
+              print *,"Error: no such obervatory code as: ",bsite
+              print *,"Problem TOA line:"
+              print *,card
+              stop
+            endif
 
           else if(nfmt.eq.3) then ! TEMPO2 format
 c First 5 fields are file, freq, TOA, err, site
@@ -306,16 +308,17 @@ c Then everything after that are flags (ignored for now)
             call citem(card,640,j1,aitem,ilen) ! site
             if (ilen.eq.1) then
               asite=aitem(1:1)
+              nsite = sitea2n(asite)
             else 
               asite=' '
               bsite=aitem(1:2)
-	      call upcase(bsite)
-              do iobs=1,36
-                if(bsite.eq.obskey(iobs)(4:5))then
-                  asite=obskey(iobs)(1:1)
-                  goto 55
-                endif
-              enddo
+              nsite=sitea2n(bsite)
+              if (nsite.eq.-2) then
+                print *,"Error: no such obervatory code as: ",bsite
+                print *,"Problem TOA line:"
+                print *,card
+                stop
+              endif
             endif
 
  55         continue
@@ -415,7 +418,7 @@ c Then everything after that are flags (ignored for now)
             nfmjd=nfmjd+1
             ffmjd=ffmjd-1.d0
           endif
-          nsite = sitea2n(asite)
+          ! nsite = sitea2n(asite)  ! this is now done earlier
 
         endif  ! end of read-data-from-file-or-memory if statement
 
@@ -439,11 +442,20 @@ C Include any TIME offset (deltat)
 C It is OK if ftzrmjd is a little outside the range [0,1],
 C this will be accounted for when the final value is calcualted
 C and printed out.
-	if(ntzref.eq.0.and.fmjd.gt.pepoch.and..not.tz)then
-	   ntzref=n
+	if(ntzref.eq.0.and..not.tz)then
+	   if(fmjd.gt.pepoch) ntzref = n
+           ! either:
+           !   ntzref has just been set by the above if statement,
+           !   in which case we want to store the tzr info
+           ! or:     
+           !   ntzref has not yet been set (so ntzref==0), in
+           !   which case it may never be set within this
+           !   part of the code, in which case we want to save
+           !   the tzr info in case this is the last TOA and
+           !   we set ntzref later.
 	   ntzrmjd=nfmjd
 	   ftzrmjd=ffmjd + deltat/86400.d0
-	   tzrsite=asite
+	   ntzrsite=nsite
 	   tzrfrq=rfrq
 	endif
 
@@ -571,7 +583,7 @@ c         it doesn't fit into any existing range, so create a new range
           ndmx = ndmx + 1
           dmxr1(ndmx) = nfmjd+ffmjd
           dmxr2(ndmx) = nfmjd+ffmjd
-          idmx = ndmx
+          idmx = ndmx	
 	  if (ndmx.gt.1 .or. firstdmx) then ! Skip 1st DMX if needed
             nfit(NPAR6+2*ndmx-1)=1
             nparam=nparam+1
@@ -711,13 +723,7 @@ C  Arecibo only.  NB: HA is abs(hour angle) in days
 C  Write itoa file correctly, including observatory code.  (VMK, June94)
 	  write(afmjd,1079) ffmjd
 1079	  format(f15.13)
-	  bsite='??'
-	  do iobs=1,36
-	     if (asite.eq.obskey(iobs)(1:1)) then
-		bsite=obskey(iobs)(4:5)
-		goto 70
-	     endif
-	  enddo
+	  bsite=siten2b(nsite)
 
  70	  write(45,1080) psrname,nfmjd,afmjd(2:),terr,rfrq,
      +      ddmch(n),bsite,comment
@@ -819,6 +825,24 @@ C TODO allow arb reference freq instead of 1 GHz?
 899       continue
 	endif
 
+C  XM-related partial derivatives
+
+        do i = 1, nxmx
+          if (         xmxuse(i) 
+     +      .and. (xmxf1(i).lt.0.d0 .or. frq.ge.xmxf1(i))
+     +      .and. (xmxf2(i).lt.0.d0 .or. frq.le.xmxf2(i))
+     +      .and. (xmxr1(i).lt.0.d0 .or. nmjd+fmjd.ge.xmxr1(i))
+     +      .and. (xmxr2(i).lt.0.d0 .or. nmjd+fmjd.lt.xmxr2(i)) ) then
+            x(NPAR12+2*i-1) = f0 * (frq/xmxfrq0)**xmxexp(i)
+            x(NPAR12+2*i  ) = x(NPAR12+2*i-1)* xmx(i) *  
+     +                                          log(frq/xmxfrq0)
+          else
+            x(NPAR12+2*i-1) = 0.d0
+            x(NPAR12+2*i  ) = 0.d0
+          endif
+        enddo
+
+
 C Save the TOA flags for use elsewhere
 C The NPTSDEF check could be removed if this array were to be 
 C dynamically allocated.
@@ -869,6 +893,8 @@ C Save the DM "residual" and error (could make this part of vmemrw stuff?)
 
 c End of input file detected
 100	continue
+
+        if(ntzref.eq.0) ntzref=n
 
         if(mod(n,modscrn).ne.1.and..not.quiet) 
      +    write(*,1100)n,fmjdlast,dt,1d6*dt*p0,jits+1

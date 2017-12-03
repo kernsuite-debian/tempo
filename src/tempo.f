@@ -117,6 +117,7 @@ c  37   design.tmp              tparin
 C  38   phisun.tmp              tempo
 C  39   <dcovfile>              glsfit
 C  40   dmxn.tmp                tempo/arrtim
+C  41   doppler.tmp             tempo
 C  42	ut1.dat			tempo
 C  43   TDB-TDT ephemeris       tempo/tdbinit
 C  44   BC ephemeris            newsrc/ephinit
@@ -152,9 +153,10 @@ C  99	gro.99			newval
         character*80 path
         character*160 cfgpath
 	character*160 npulsefile, infofile, phisunfile, dmxnfile
+        character*160 dopplerfile
 	character date*9,date2*9,damoyr*9,label*12,parfile*160
 	integer time
-        real*8 xmean(NPA),alng(36)
+        real*8 xmean(NPA),alng(NOBSMAX)
 
         integer sitea2n ! external function
 
@@ -162,6 +164,7 @@ C  99	gro.99			newval
 	data resfile1/'resid1.tmp'/
         data infofile/'info.tmp'/
         data phisunfile/'phisun.tmp'/
+        data dopplerfile/'doppler.tmp'/
         data dmxnfile/'dmxn.tmp'/
 	data listfile/'tempo.lis'/
 	data bmodel /'None','BT','EH','DD','DDGR','H88','BT+','DDT',
@@ -187,6 +190,12 @@ c  Parse tempo.cfg file
 
  	cfgpath=path(1:lpth)//'/tempo.cfg'
         call cfgin(cfgpath,ut1file,obsyfile,tdbfile)  
+
+c  Open primary output file (tempo.lis)
+        if (.not.quiet)
+     +       open(31,file=listfile,status='unknown')
+
+	call setup(version,infile,obsyfile,alng,parfile)
 
 	nfl=index(infile,' ')-1
 
@@ -223,11 +232,7 @@ c  Open ut1 file (if present)
      +    ' No UT1 correction'/)
 	ut1flag=.false.
 
-c  Open primary output file (tempo.lis)
  11	continue
-        if (.not.quiet)
-     +       open(31,file=listfile,status='unknown')
-
 	if (npulsein) then
 	  open(35,file=npulsefile,status='old')
 	else if (npulseout) then
@@ -276,7 +281,7 @@ c  Open TDB-TDT clock offset file
             if(.not.oldpar)parunit=49
             open(50,file=infile,status='unknown')
             
-            call tzinit(obsyfile,sitelng,num)
+            call tzinit(alng,sitelng,num)
             fmjdnow=40587+time()/86400.d0
             date=damoyr(int(fmjdnow))
             
@@ -339,7 +344,9 @@ c  Open TDB-TDT clock offset file
 	  	call atimfake(afmjd,nbin,nt,sitelng,ipsr)
 		rewind 50
 		close(2)
-		call setup(version,infile,obsyfile,alng,parfile)
+                ! following moved earlier in code 2017-Aug-10
+                ! left here temporarily in case we find a problem with it
+		! call setup(version,infile,obsyfile,alng,parfile)
 		call newsrc(nits,jits,nboot)
 		call arrtim(mode,xmean,sumdt1,sumwt,dnpls(1+dnplsoff),
      +               ddmch(1+ddmchoff),ct2,alng,nz,nptsmax,
@@ -413,13 +420,16 @@ c  Open parameter and residual files
      +       ' Data from ',a, ',   Input parameters from ',a)
 	  endif
 
-	  call setup(version,infile,obsyfile,alng,parfile)
+          ! following moved earlier in code 2017-Aug-10
+          ! left here temporarily in case we find a problem with it
+	  ! call setup(version,infile,obsyfile,alng,parfile)
 
 C         The main loop:
  60       continue
 
 	  if (phisunout) open (38,file=phisunfile)
 	  if (dmxnout) open (40,file=dmxnfile)
+	  if (dopplerout) open (41,file=dopplerfile)
           call newsrc(nits,jits,nboot)
 
  62       continue  ! re-entry point after re-allocating arrays
@@ -447,6 +457,7 @@ C         The main loop:
             nbuf = nptsmax * (nparmax+8) 
             call tmalloc(nptsmax,nbuf) ! allocate large arrays
             nparam = nparam0    ! un-do any change to nparam from arrtim call
+            ndmx = ndmx0        ! un-do any change to ndmx from arrtim call
             goto 62
           endif
 
@@ -478,6 +489,7 @@ C         The main loop:
      +		.not.nostop) go to 9999
 
           if (phisunout) close(38)
+          if (dopplerout) close(41)
 
           if(jits.lt.nits .or. nits.eq.9) go to 60
 
