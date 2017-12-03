@@ -4,7 +4,7 @@ c      $Id$
 	logical usestart, usefinish
         logical usedmx, firstdmx, nonewdmx
         logical npulsein, npulseout, infoout, quiet, polystdout
-        logical phisunout
+        logical phisunout, dopplerout
         logical dmxnout
         logical tz
         logical autotz
@@ -21,6 +21,9 @@ c      $Id$
         logical nofitjump     ! blocks fitting for a given JUMP
         logical useglsfit     ! use generalized-least-squares fit
         logical usedmdata     ! use input DM measurements as "data"
+	logical usexmxfrq0    ! non-default xmxfrq0, write it to output
+
+	logical xmxuse        ! whether to use a given xmx range
 
 	integer parunit, nskip, iboot
         integer fitmode
@@ -30,6 +33,9 @@ c      $Id$
         integer nflagefac   ! number of tempo2-style flag-based EFAC
         integer nflagequad  ! number of tempo2-style flag-based EQUAD
         integer nflagecorr  ! number of flag-based ecorr/jitter terms
+
+	integer nxmx        ! number of xmx terms used
+
         real*8 phimin
         real*8 PAAscNode    ! position angle of ascending node
         real*8 solarn0      ! solar wind electron density at 1 AU (e-/cc)
@@ -41,7 +47,7 @@ c      $Id$
         real*8 ceecl, seecl ! cosine and sine of obliquity of the ecliptic
 
 	common pdec,pra,ba(3),bc(3),dm,dt,dt2,freq(NPAP1),
-     +    ferr(NPAP1),fmin,hlt(36),hrd(36),siteused(36),
+     +    ferr(NPAP1),fmin,hlt(NOBSMAX),hrd(NOBSMAX),siteused(NOBSMAX),
      +    wt,x(NPAP1),era,ec,
      +    erd,fmax,emax,tmax,phimin,start,finish,amjd1,amjd2,posepoch,
      +    posep,dither,xjdoff(2,NJUMP),dct(NJUMP),nofitjump(NJUMP),
@@ -62,14 +68,18 @@ c      $Id$
      +	  eclcoord,usestart,usefinish,npulsein,npulseout,
      +    parunit,nskip,iboot,fitmode,ndmcalc,nflagjumps,
      +    nflagefac,nflagequad,nflagecorr,
-     +    nfcalc,ntoa,nparam0,infolen,infoout,phisunout,dmxnout,
-     +    ssdmflag,
+     +    nfcalc,ntoa,nparam0,ndmx0,infolen,infoout,phisunout,
+     +    dopplerout,dmxnout,ssdmflag,
      +    quiet,polystdout,tz,autotz,firstdmx,nonewdmx,
      +    useannorb,usefixeddist,jumpbarycenter,useglsfit,
      +    usedmdata,
      +    tdbif99fmt
 
-
+        common /xmxcom/ xmx(NXMXMAX), xmxexp(NXMXMAX),
+     +                  xmxr1(NXMXMAX), xmxr2(NXMXMAX),
+     +                  xmxf1(NXMXMAX), xmxf2(NXMXMAX),
+     +                  xmxuse(NXMXMAX),
+     +                  xmxfrq0, usexmxfrq0, nxmx
 
 	character psrname*64,obsflag*1,pardir*80,infotxt*160
         character obskey*5
@@ -81,7 +91,7 @@ c      $Id$
         character eclcon*80
         character dcovfile*80
 
-        common/acomch/psrname,pardir,obsflag,infotxt,obskey(36),
+        common/acomch/psrname,pardir,obsflag,infotxt,obskey(NOBSMAX),
      +    eclcon,dcovfile,
      +    jumpflag(NJUMP),jumpflagval(NJUMP),infoflag,
      +    efacflag(NFLAGERR),efacflagval(NFLAGERR),

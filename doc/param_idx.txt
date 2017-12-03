@@ -25,7 +25,7 @@ Tempo parameter indexes
      varsig      Freire & Wex parameter varsig     nbin=15 only 
  21  M           Total mass, m1+m2                 1,2,3,5: N/A
  22  m2          Companion mass                       1,2,: N/A
-     h3          Freire & Wex parameter h3         nbin=15 only 
+     h3          Freire & Wex parameter h3         nbin=15,16 only 
  23  dtheta      DD parameter    (nbin=3)
  24  xdot        Derivative of x
  25  edot        Derivative of eccentricity
@@ -149,6 +149,14 @@ NPAR11+1                   f3                 Third spin frequency derivative
 NPAR11+2                   f4(1)              Fourth spin frequency derivative
 NPAR11+3                   f4(2)              Fifth spin frequency derivative
   ...                        ...                   ...
-NPA=NPAR11+NFMAX-2         f4(NFMAX)          NFXMAX spin frequency derivative
+NPAR12=NPAR11+NFMAX-2      f4(NFMAX)          NFXMAX spin frequency derivative
+
+NPAR12+1                   xmx(1)             xmx amplitude 1
+NPAR12+2                   xmxexp(1)          xmx exponent 1
+NPAR12+3                   xmx(2)             xmx amplitude 2
+NPAR12+4                   xmxexp(2)          xmx exponent 2
+  ...                        ...                   ...
+NPAR12+2*NXMXMAX-1         xmx(NXMXMAX)       xmx amlitude NXMXMAX
+NPAR=NPAR12+2*NXMXMAX      xmxexp(NXMXMAX)    xmx exponent NXMXMAX
 
 

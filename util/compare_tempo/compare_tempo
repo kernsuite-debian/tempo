@@ -8,7 +8,9 @@
 $tpo1default = "tempo";
 $tpo2default = "tempo";
 
-($file1, $file2, $tpo1, $tpo2, $env1, $env2, $dir1, $dir2, $parfile1, $parfile2, $runtpo) = 
+$outblank = ' ' x 192;
+
+($file1, $file2, $tpo1, $tpo2, $env1, $env2, $dir1, $dir2, $parfile1, $parfile2, $runtpo, $sigflag, $hdr, $fullfilename) = 
         compare_tempo_command_line_parse($tpo1default,$tpo2default,@ARGV);
 
 $parfile1 = " -f $parfile1 " if ($parfile1 ne "");
@@ -83,127 +85,116 @@ foreach $i (0..$#b) {
 }
 close A;
 
-print "\n";
+if ($hdr==1) {
+  print "\n";
 
   print '-'x21 . 'tempo run a' . '-'x21 . '       ';
   print '-'x21 . 'tempo run b' . '-'x21 . "\n";
-if ($runtpo) {
-  $out = ' 'x 120;
-  substr($out,0,length($file1)+11) = "file:      ".$file1;
-  substr($out,60,length($file2)+11) = "file:      ".$file2;
-  print "$out\n";
-  $out = ' 'x 120;
-  substr($out,0,length($dir1)+11) = "directory: ".$dir1;
-  substr($out,60,length($dir2)+11) = "directory: ".$dir2;
-  print "$out\n";
-  $out = ' 'x 120;
-  substr($out,0,length($tpo1)+11) = "tempo:     ".$tpo1;
-  substr($out,60,length($tpo2)+11) = "tempo:     ".$tpo2;
-  print "$out\n";
-  $out = ' 'x 120;
-  substr($out,0,length($parfile1)+11) = "parfile:   ".$parfile1;
-  substr($out,60,length($parfile2)+11) = "parfile:   ".$parfile2;
-  print "$out\n";
-  $out = ' 'x 120;
-  substr($out,0,length($env1)+11) = "\$TEMPO:    ".$env1;
-  substr($out,60,length($env2)+11) = "\$TEMPO:    ".$env2;
-} else {
-  $out = ' 'x 120;
-  substr($out,0,length($file1)+11) = "par file:  ".$file1;
-  substr($out,60,length($file2)+11) = "par file:  ".$file2;
-}
-$out = $out . "  "."     b-a     ";
-$out = $out . "  "." (b-a)/max(siga,sigb)";
-$out = $out . "  "."   (b-a)/[(a+b)/2]";
-$out = $out . "  sigb/siga";
-print "$out\n";
-print "\n";
 
-$idxa = 0; 
-$idxb = 0;
-while ($idxa<=$#a && $idxb<=$#b) {
-  ($aname,$aoff) = &get_par_name($a[$idxa]);
-  ($bname,$boff) = &get_par_name($b[$idxb]);
-  if ($aname ne $bname) {
-    $matchflag = 0;
-  A: foreach $i ($idxb+1..$#b) {
-      ($bnamex,$boff) = &get_par_name($b[$i]);
-      if ($bnamex eq $aname) {
-        foreach $j($idxb..$i-1) {
-          $out = ' 'x 120;  
-          substr($out,60,length($b[$j])) = $b[$j];
-          print "$out\n";
-        }
-        $matchflag = 1;
-        $idxb=$i;
-        last A;
-      }
+  if ($runtpo) {
+    $out = ' 'x 120;
+    substr($out,0,length($file1)+11) = "file:      ".$file1;
+    substr($out,60,length($file2)+11) = "file:      ".$file2;
+    print "$out\n";
+    $out = ' 'x 120;
+    substr($out,0,length($dir1)+11) = "directory: ".$dir1;
+    substr($out,60,length($dir2)+11) = "directory: ".$dir2;
+    print "$out\n";
+    $out = ' 'x 120;
+    substr($out,0,length($tpo1)+11) = "tempo:     ".$tpo1;
+    substr($out,60,length($tpo2)+11) = "tempo:     ".$tpo2;
+    print "$out\n";
+    $out = ' 'x 120;
+    if ($fullfilename) {
+      $p1  = $parfile1;
+      $p2  = $parfile2;
+    } else {
+      $p1 = (split("/",$parfile1))[-1];
+      $p2 = (split("/",$parfile2))[-1];
     }
-    if ($matchflag==0) {
-    B: foreach $i ($idxa+1..$#a) {
-        ($anamex,$aoff) = &get_par_name($a[$i]);
-        if ($anamex eq $bname) {
-          foreach $j ($idxa..$i-1) {
-            $out = ' ' x 120;
-            substr($out,0,length($a[$j])) = $a[$j];
-            print "$out\n";
-          }
-          $matchflag = 1;
-          $idxa=$i;
-          last B;
-        }
-      }
+    substr($out,0,length($p1)+11) = "parfile:   ".$p1;
+    substr($out,60,length($p2)+11) = "parfile:   ".$p2;
+    print "$out\n";
+    $out = ' 'x 120;
+    substr($out,0,length($env1)+11) = "\$TEMPO:    ".$env1;
+    substr($out,60,length($env2)+11) = "\$TEMPO:    ".$env2;
+  } else {
+    $out = ' 'x 120;
+    if ($fullfilename) {
+      $p1  = $file1;
+      $p2  = $file2;
+    } else {
+      $p1 = (split("/",$file1))[-1];
+      $p2 = (split("/",$file2))[-1];
     }
-    if ($matchflag==0) {
-      print "cannot reconcile parameter files starting with these lines:\n";
-      $out = ' 'x 120;  
-      substr($out,0,length($a[$idxa])) = $a[$idxa];
-      substr($out,60,length($b[$idxb])) = $b[$idxb];
+    substr($out,0,length($p1)+11) = "par file:  ".$p1;
+    substr($out,60,length($p2)+11) = "par file:  ".$p2;
+  }
+  $out = $out . "  "."     b-a     ";
+  $out = $out . "  "." (b-a)/max(siga,sigb)";
+  $out = $out . "  "."   (b-a)/[(a+b)/2]";
+  $out = $out . "  sigb/siga";
+  print "$out\n";
+  print "\n";
+}
+
+foreach $i (0..$#a) {
+while ($#a>-1) {
+  $astring = shift(@a);
+  $matchflag = 0;
+  ($aname,$aoff) = &get_par_name($astring);
+  foreach $i (0..$#b) {
+    ($bname,$boff) = &get_par_name($b[$i]);
+    if ($aname eq $bname) {
+      $matchflag = 1;
+      $bstring = splice(@b,$i,1);
+      last;
     }
   }
-  $out = ' 'x 120;  
-  substr($out,0,length($a[$idxa])) = $a[$idxa];
-  substr($out,60,length($b[$idxb])) = $b[$idxb];
-  $a[$idxa] =~ s/D/E/g;
-  $b[$idxb] =~ s/D/E/g;
-  ($atmp1,$aflag,$aerr) = (split(" ",$a[$idxa]))[$aoff..$aoff+2];
-  ($btmp1,$bflag,$berr) = (split(" ",$b[$idxb]))[$boff..$boff+2];
+  if ($matchflag==0) {
+    $out = $outblank;  
+    substr($out,0,length($astring)) = $astring;
+    print "$out\n";
+  } else {
+    $out = substr($outblank,0,120);
+    substr($out,0,length($astring)) = $astring;
+    substr($out,60,length($bstring)) = $bstring;
+    $astring =~ s/D/E/g;
+    $bstring =~ s/D/E/g;
+    ($atmp1,$aflag,$aerr) = (split(" ",$astring))[$aoff..$aoff+2];
+    ($btmp1,$bflag,$berr) = (split(" ",$bstring))[$boff..$boff+2];
 
-  if (defined($aflag) && defined($bflag) && $aflag>0 && $bflag>0) {    
-    @atmp = split(":",$atmp1);   #this fixes entries of the form aa:bb:cc
-    @btmp = split(":",$btmp1);   #but also works for single number-entries
-    $aparam = 0.;
-    foreach $i (0..$#atmp) {
-      $aparam = 60*$aparam + shift(@atmp);
+    if (defined($aflag) && defined($bflag) && $aflag>0 && $bflag>0) {    
+      @atmp = split(":",$atmp1);   #this fixes entries of the form aa:bb:cc
+      @btmp = split(":",$btmp1);   #but also works for single number-entries
+      $aparam = 0.;
+      foreach $i (0..$#atmp) {
+        $aparam = 60*$aparam + shift(@atmp);
+      }
+      $bparam = 0.;
+      foreach $i (0..$#btmp) {
+        $bparam = 60*$bparam + shift(@btmp);
+      }
+      $diff = $bparam-$aparam;
+      $diffx = $diff/(0.5*($aparam+$bparam));
+      $diffsig = abs($diff)/$aerr if ($berr<=$aerr);
+      $diffsig = abs($diff)/$berr if ($berr>$aerr);
+      $ratsig = 0;
+      $ratsig = $berr/$aerr if ($aerr>0);
+      $outflag = "";
+      if ($sigflag>0. && $diffsig>$sigflag) {
+        $outflag = "*****";
+      }
+      $out = $out . sprintf("  %13.6e  %20.15f  %20.15f  %7.3f   %s",$diff,$diffsig,$diffx,$ratsig,$outflag);
     }
-    $bparam = 0.;
-    foreach $i (0..$#btmp) {
-      $bparam = 60*$bparam + shift(@btmp);
-    }
-    $diff = $bparam-$aparam;
-    $diffx = $diff/(0.5*($aparam+$bparam));
-    $diffsig = abs($diff)/$aerr if ($berr<=$aerr);
-    $diffsig = abs($diff)/$berr if ($berr>$aerr);
-    $ratsig = 0;
-    $ratsig = $berr/$aerr if ($aerr>0);
-    $out = $out . sprintf("  %13.6e  %20.15f  %20.15f  %7.3f",$diff,$diffsig,$diffx,$ratsig);
-  }
-  print "$out\n";
-  $idxa++;
-  $idxb++;
-}
-if ($idxa<=$#a) {
-  foreach $j ($idxa..$#a) {
-    $out = ' ' x 120;
-    substr($out,0,length($a[$j])) = $a[$j];
     print "$out\n";
   }
 }
-if ($idxb<=$#b) {
-  foreach $j ($idxb..$#b) {
-    $out = ' ' x 120;
-    substr($out,60,length($b[$j])) = $b[$j];
-    print "$out\n";
+while ($#b>-1) {
+  $bstring = pop(@b);
+  $out = $outblank;
+  substr($out,60,length($bstring)) = $bstring;
+  print "$out\n";
   }
 }
 
@@ -244,7 +235,7 @@ sub get_par_name{
   }
 
   if ($flag) {
-    $sname = join(" ",@s[0..2]);
+    $sname = join("_",@s[0..2]);
     $soff = 3;
   } else {
     $sname = $s[0];
@@ -327,7 +318,10 @@ sub compare_tempo_command_line_parse {
   "   -tXXX   = tempo executable, first run    [default=$tpo1default]\n".
   "   -TXXX   = tempo executable, second run   [default=$tpo2default]\n".
   "   -h      = help message\n".
+  "   -sXXX   = flag error differences greater than XXX sigma [default=not done]\n".
+  "   -n      = don't print header or file information, only print parameters\n".
   "   -p      = don't run tempo; read file1 and file2 as tempo .par files\n".
+  "   -l      = in the output, remove any path before listing input file anems\n".
   "\n";
 
   my($f);
@@ -345,6 +339,9 @@ sub compare_tempo_command_line_parse {
   my($parfile1) = "";
   my($parfile2) = "";
   my($runtpo) = 1;
+  my($hdr) = 1;
+  my($fullfilename) = 1;
+  my($sigflag) = 0.;
 
   foreach $par (@_) {
     if ($par=~/^-/) {           # flags
@@ -376,10 +373,17 @@ sub compare_tempo_command_line_parse {
         } elsif ($f eq "F") {#       -F
           $parfile2 = $par;
           last;
+        } elsif ($f eq "s") {#       -F
+          $sigflag = $par;
+          last;
         } elsif ($f eq "h") {#       -h
           die $usage;
         } elsif ($f eq "p") {#       -t
           $runtpo = 0;
+        } elsif ($f eq "n") {#       -n
+          $hdr = 0;
+        } elsif ($f eq "l") {#       -l
+          $fullfilename = 0;
         }  else {            #       invalid flag
           print "\nERROR: Invalid flag -$f\n\n";
           die $usage;
@@ -398,6 +402,6 @@ sub compare_tempo_command_line_parse {
   my($file2) = $file1;
   $file2 = $param[1] if ($#param>0);
 
-  return $file1, $file2, $tpo1, $tpo2, $env1, $env2, $dir1, $dir2, $parfile1, $parfile2, $runtpo;
+  return $file1, $file2, $tpo1, $tpo2, $env1, $env2, $dir1, $dir2, $parfile1, $parfile2, $runtpo, $sigflag, $hdr,$fullfilename;
 }
 

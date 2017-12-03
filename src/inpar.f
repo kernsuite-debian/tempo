@@ -12,6 +12,7 @@ c      $Id$
       include 'orbit.h'
       include 'eph.h'
       include 'glitch.h'
+      include 'tz.h'
 
 
       integer i
@@ -96,7 +97,7 @@ c	new in DDFWHE
       ntzrmjd = 0.
       ftzrmjd = 0.
       tzrfrq = 0.
-      tzrsite = 0.
+      tzrsite = ""
 
       nxoff=0
       nflagjumps=0
@@ -137,6 +138,20 @@ c	new in DDFWHE
 	dmxf1(i) = 0.
 	dmxf2(i) = 0.
       enddo
+
+      nxmx = 0
+      xmxfrq0 = 1000.d0 
+      usexmxfrq0 = .false.
+      do i = 1, NXMXMAX
+        xmx(i) = 0.
+        xmxexp(i) = 1.
+	xmxr1(i) = -1.
+	xmxr2(i) = -1.
+	xmxf1(i) = -1.
+	xmxf2(i) = -1.
+        xmxuse = .false.
+      enddo
+
 
       ndmcalc=0
 
@@ -390,7 +405,7 @@ C  Control parameters
          read(value,*)tzrfrq
 
       else if(key(1:7).eq.'TZRSITE')then
-         tzrsite=value(1:1)
+         tzrsite=value
          
       else if(key(1:5).eq.'START')then
          read(value,*)start
@@ -492,22 +507,22 @@ C  Position parameters
          read(cfit,*)nfit(8)
          setequ = .true.
 
-      else if(key(1:4).eq.'BETA')then
+      else if(key(1:4).eq.'BETA'.or.key(1:4).eq.'ELAT')then
          read(value,*)pdec
          read(cfit,*)nfit(5)
 	 setecl = .true.
 
-      else if(key(1:6).eq.'LAMBDA')then
+      else if(key(1:6).eq.'LAMBDA'.or.key(1:5).eq.'ELONG')then
          read(value,*)pra
          read(cfit,*)nfit(6)
 	 setecl = .true.
 
-      else if(key(1:6).eq.'PMBETA')then
+      else if(key(1:6).eq.'PMBETA'.or.key(1:6).eq.'PMELAT')then
          read(value,*)pmdec
          read(cfit,*)nfit(7)
 	 setecl = .true.
 
-      else if(key(1:8).eq.'PMLAMBDA')then
+      else if(key(1:8).eq.'PMLAMBDA'.or.key(1:7).eq.'PMELONG')then
          read(value,*)pmra
          read(cfit,*)nfit(8)
          setecl = .true.
@@ -573,6 +588,66 @@ C          if((nfit(NPAR6+2*ikey)).gt.0) write(*,'(''Fitting anyway'')')
          endif
          ndmx = max(ndmx,ikey)
          read(value,*)dmxr2(ikey)
+
+      else if(key(1:8).eq.'XMXFRQ0') then
+         read(value,*)xmxfrq0
+	 usexmxfrq0 = .true.
+
+      else if(key(1:4).eq.'XMX_') then
+         if (ikey.gt.NXMXMAX) then
+           write(*,'(''XMX key too high: '',a)')key
+           stop
+         endif
+         nxmx = max(nxmx,ikey)
+         read(value,*)xmx(ikey)
+         read(cfit,*)nfit(NPAR12+2*ikey-1)
+         xmxuse(ikey) = .true.
+
+      else if(key(1:7).eq.'XMXEXP_') then
+         if (ikey.gt.NXMXMAX) then
+           write(*,'(''XMX key too high: '',a)')key
+           stop
+         endif
+         nxmx = max(nxmx,ikey)
+         read(value,*)xmxexp(ikey)
+         read(cfit,*)nfit(NPAR12+2*ikey)
+         xmxuse(ikey) = .true.
+
+      else if(key(1:6).eq.'XMXR1_') then
+         if (ikey.gt.NXMXMAX) then
+           write(*,'(''XMX key too high: '',a)')key
+           stop
+         endif
+         nxmx = max(nxmx,ikey)
+         read(value,*)xmxr1(ikey)
+         xmxuse(ikey) = .true.
+         
+      else if(key(1:6).eq.'XMXR2_') then
+         if (ikey.gt.NXMXMAX) then
+           write(*,'(''XMX key too high: '',a)')key
+           stop
+         endif
+         nxmx = max(nxmx,ikey)
+         read(value,*)xmxr2(ikey)
+         xmxuse(ikey) = .true.
+         
+      else if(key(1:6).eq.'XMXF1_') then
+         if (ikey.gt.NXMXMAX) then
+           write(*,'(''XMX key too high: '',a)')key
+           stop
+         endif
+         nxmx = max(nxmx,ikey)
+         read(value,*)xmxf1(ikey)
+         xmxuse(ikey) = .true.
+         
+      else if(key(1:6).eq.'XMXF2_') then
+         if (ikey.gt.NXMXMAX) then
+           write(*,'(''XMX key too high: '',a)')key
+           stop
+         endif
+         nxmx = max(nxmx,ikey)
+         read(value,*)xmxf2(ikey)
+         xmxuse(ikey) = .true.
          
       else if((key(1:3).eq.'DM0'.and.lk.eq.3).or.
      +         key(1:2).eq.'DM'.and.lk.eq.2)then
