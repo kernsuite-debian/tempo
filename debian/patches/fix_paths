@@ -1,28 +1,34 @@
 Description: install files in correct locations
-
---- tempo-0+git20160709.orig/src/tempo.f
-+++ tempo-0+git20160709/src/tempo.f
-@@ -185,7 +185,7 @@ c  Get command-line arguments
+--- a/src/tempo.f
++++ b/src/tempo.f
+@@ -188,7 +188,7 @@
  
  c  Parse tempo.cfg file
  
 - 	cfgpath=path(1:lpth)//'/tempo.cfg'
-+ 	cfgpath='/etc/tempo/tempo.cfg'
++ 	cfgpath='/etc/tempo.cfg'
          call cfgin(cfgpath,ut1file,obsyfile,tdbfile)  
  
- 	nfl=index(infile,' ')-1
---- tempo-0+git20160709.orig/src/tparin.f
-+++ tempo-0+git20160709/src/tparin.f
-@@ -94,7 +94,7 @@ c     default values of parameters
+ c  Open primary output file (tempo.lis)
+--- a/src/tparin.f
++++ b/src/tparin.f
+@@ -93,13 +93,13 @@
  
-       call getenv ('TEMPO',path)
+       infile = ''	
+ 
+-      call getenv ('TEMPO',path)
++      path = '/usr/share/tempo/'
        lpth = index(path,' ')-1
+       if (lpth.eq.0) then
+         print *, "You must set the $TEMPO environment variable in order to run tempo."
+         stop
+       endif
 -      hlpfile = path(1:lpth)//'/tempo.hlp'	
 +      hlpfile = '/usr/share/tempo/tempo.hlp'	
  
  
        narg = iargc()
-@@ -124,7 +124,7 @@ c     default values of parameters
+@@ -129,7 +129,7 @@
                path = getparm(s,i,ii,iarg,narg)
                if (path.eq.'') goto 9999 ! error
                lpth = index(path,' ')-1
@@ -31,29 +37,30 @@ Description: install files in correct locations
  	    else if (s(i:i).eq.'D') then
  	      ldesign = .true.
  	      open(37,file='design.tmp',form='unformatted',
---- tempo-0+git20160709.orig/tempo.cfg.in
-+++ tempo-0+git20160709/tempo.cfg.in
+--- a/tempo.cfg.in
++++ b/tempo.cfg.in
 @@ -1,5 +1,5 @@
--CLKDIR       @abs_top_srcdir@/clock/
--PARDIR       @abs_top_srcdir@/tzpar/
-+CLKDIR       /usr/share/tempo/clock/
-+PARDIR       /usr/share/tempo/tzpar/
- TZDIR        ./
- OBS_NIST     time.dat
- NIST_UTC     utccorr.tot                     UTC(NIST) to UTC
-@@ -10,13 +10,13 @@ NIST_BIPM    bipmnist.15.extrap
- NIST_PTB     ptbnist.90                      UTC(NIST) to UTC(PTB)
- NIST_AT1     at1nist.90                      UTC(NIST) to AT1
- UT1          ut1.dat                         UT1 - UT
--EPHDIR       @abs_top_srcdir@/ephem/
-+EPHDIR       /usr/share/tempo/ephem/
- EPHFILE      DE200.1950.2050 --eph=DE200 --endian=big
- EPHFILE      DE405.1950.2050 --eph=DE405 --endian=big
- EPHFILE      DE418.1950.2050 --eph=DE418 --endian=big
- EPHFILE      DE421.1950.2050 --eph=DE421 --endian=little
- EPHFILE      DE430.1950.2050 --eph=DE430 --endian=little
- TDBFILE      TDB.1950.2050
--OBSYS        @abs_top_srcdir@/obsys.dat      Observatory list
-+OBSYS        /usr/share/tempo/obsys.dat      Observatory list
- TZTOT        tztot.dat
- TZSITE       1
+-CLKDIR         @abs_top_srcdir@/clock/
+-PARDIR         @abs_top_srcdir@/tzpar/
++CLKDIR         /usr/share/tempo/clock/
++PARDIR         /usr/share/tempo/tzpar/
+ TZDIR          ./
+ OBS_NIST       time.dat
+ NIST_UTC       utccorr.tot                     UTC(NIST) to UTC
+@@ -14,7 +14,7 @@
+ NIST_PTB       ptbnist.90                      UTC(NIST) to UTC(PTB)
+ NIST_AT1       at1nist.90                      UTC(NIST) to AT1
+ UT1            ut1.dat                         UT1 - UT
+-EPHDIR         @abs_top_srcdir@/ephem/
++EPHDIR         /usr/share/tempo/ephem/
+ EPHFILE        DE200.1950.2050 --eph=DE200 --endian=big
+ EPHFILE        DE405.1950.2050 --eph=DE405 --endian=big
+ EPHFILE        DE418.1950.2050 --eph=DE418 --endian=big
+@@ -23,6 +23,6 @@
+ EPHFILE        DE435.1950.2050 --eph=DE435 --endian=little
+ EPHFILE        DE436.1950.2050 --eph=DE436 --endian=little
+ TDBFILE        TDB.1950.2050
+-OBSYS          @abs_top_srcdir@/obsys.dat      Observatory list
++OBSYS          /usr/share/tempo/obsys.dat      Observatory list
+ TZTOT          tztot.dat
+ TZSITE         1

@@ -1,3 +1,10 @@
+tempo (0+git20171027-1kern1) xenial; urgency=medium
+
+  * make debian files mit
+  * Imported Upstream version 0+git20171027
+
+ -- KERN packaging <packaging@kernsuite.info>  Sun, 03 Dec 2017 14:32:51 +0200
+
 tempo (0+git20160709-1kern2) xenial; urgency=medium
 
   * also install config file, set paths in config file
