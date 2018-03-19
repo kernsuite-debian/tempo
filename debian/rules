@@ -3,7 +3,6 @@
 %:
 	dh $@ --with autoreconf --parallel
 
-override_dh_auto_clean:
-	dh_auto_clean
-	rm -rf util/print_resid/Makefile
-	rm -rf .pc
+override_dh_install:
+	dh_install
+	rm -rf debian/tempo/usr/share/tempo/clock/.cvsignore
