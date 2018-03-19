@@ -1,15 +1,11 @@
-tempo (0+git20180308-1kern1) UNRELEASED; urgency=medium
+tempo (0+git20180308-1kern1) bionic; urgency=medium
 
-  [ KERN packaging ]
-  * New upstream version 0+git20180308
-
-  [ Gijs Molenaar ]
   * New upstream version 0+20180308
   * add better description. update standard version
   * improve copyright file
   * properly install and clean files
 
- -- KERN packaging <packaging@kernsuite.info>  Mon, 19 Mar 2018 13:19:18 +0000
+ -- KERN packaging <packaging@kernsuite.info>  Mon, 19 Mar 2018 13:19:33 +0000
 
 tempo (0+git20171027-1kern1) xenial; urgency=medium
 
