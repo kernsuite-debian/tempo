@@ -1,9 +1,9 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: tempo
-Source: <url://example.com>
+Source: http://tempo.sourceforge.net/
 
 Files: *
-Copyright: <years> <put author's name and email here>
+Copyright: 2018 J. H. Taylor, R. N. Manchester, D. J. Nice, J. M. Weisberg, A. Irwin, N. Wex
 License: GPL-2.0+
 
 Files: debian/*
