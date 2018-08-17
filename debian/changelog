@@ -1,3 +1,12 @@
+tempo (0.0~git20180809.502e643-1) bionic; urgency=medium
+
+  [ Gijs Molenaar ]
+  * add watch file
+  * New upstream version 0.0~git20180809.502e643
+  * add patches from spack
+
+ -- KERN packaging <packaging@kernsuite.info>  Fri, 17 Aug 2018 13:57:53 +0200
+
 tempo (0+git20180308-1kern1) bionic; urgency=medium
 
   * New upstream version 0+20180308
