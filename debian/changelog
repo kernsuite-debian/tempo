@@ -1,3 +1,10 @@
+tempo (0.0~git20180924.cdb9be9-1) bionic; urgency=medium
+
+  [ Gijs Molenaar ]
+  * New upstream version 0.0~git20180924.cdb9be9
+
+ -- KERN packaging <packaging@kernsuite.info>  Wed, 26 Sep 2018 17:59:33 +0200
+
 tempo (0.0~git20180821.deac319-1) bionic; urgency=medium
 
   [ Gijs Molenaar ]
