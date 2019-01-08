@@ -1,7 +1,9 @@
 Description: install files in correct locations
---- a/src/tempo.f
-+++ b/src/tempo.f
-@@ -188,7 +188,7 @@
+Index: tempo/src/tempo.f
+===================================================================
+--- tempo.orig/src/tempo.f
++++ tempo/src/tempo.f
+@@ -188,7 +188,7 @@ c  Get command-line arguments
  
  c  Parse tempo.cfg file
  
@@ -10,9 +12,11 @@ Description: install files in correct locations
          call cfgin(cfgpath,ut1file,obsyfile,tdbfile)  
  
  c  Open primary output file (tempo.lis)
---- a/src/tparin.f
-+++ b/src/tparin.f
-@@ -93,13 +93,13 @@
+Index: tempo/src/tparin.f
+===================================================================
+--- tempo.orig/src/tparin.f
++++ tempo/src/tparin.f
+@@ -93,13 +93,13 @@ c     default values of parameters
  
        infile = ''	
  
@@ -28,7 +32,7 @@ Description: install files in correct locations
  
  
        narg = iargc()
-@@ -129,7 +129,7 @@
+@@ -129,7 +129,7 @@ c     default values of parameters
                path = getparm(s,i,ii,iarg,narg)
                if (path.eq.'') goto 9999 ! error
                lpth = index(path,' ')-1
@@ -37,30 +41,3 @@ Description: install files in correct locations
  	    else if (s(i:i).eq.'D') then
  	      ldesign = .true.
  	      open(37,file='design.tmp',form='unformatted',
---- a/tempo.cfg.in
-+++ b/tempo.cfg.in
-@@ -1,5 +1,5 @@
--CLKDIR         @abs_top_srcdir@/clock/
--PARDIR         @abs_top_srcdir@/tzpar/
-+CLKDIR         /usr/share/tempo/clock/
-+PARDIR         /usr/share/tempo/tzpar/
- TZDIR          ./
- OBS_NIST       time.dat
- NIST_UTC       utccorr.tot                     UTC(NIST) to UTC
-@@ -14,7 +14,7 @@
- NIST_PTB       ptbnist.90                      UTC(NIST) to UTC(PTB)
- NIST_AT1       at1nist.90                      UTC(NIST) to AT1
- UT1            ut1.dat                         UT1 - UT
--EPHDIR         @abs_top_srcdir@/ephem/
-+EPHDIR         /usr/share/tempo/ephem/
- EPHFILE        DE200.1950.2050 --eph=DE200 --endian=big
- EPHFILE        DE405.1950.2050 --eph=DE405 --endian=big
- EPHFILE        DE418.1950.2050 --eph=DE418 --endian=big
-@@ -23,6 +23,6 @@
- EPHFILE        DE435.1950.2050 --eph=DE435 --endian=little
- EPHFILE        DE436.1950.2050 --eph=DE436 --endian=little
- TDBFILE        TDB.1950.2050
--OBSYS          @abs_top_srcdir@/obsys.dat      Observatory list
-+OBSYS          /usr/share/tempo/obsys.dat      Observatory list
- TZTOT          tztot.dat
- TZSITE         1

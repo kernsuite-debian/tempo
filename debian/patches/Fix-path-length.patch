@@ -1,7 +1,9 @@
 Description: Increase variables for path
 
---- tempo-0.0~git20180809.502e643.orig/src/acom.h
-+++ tempo-0.0~git20180809.502e643/src/acom.h
+Index: tempo/src/acom.h
+===================================================================
+--- tempo.orig/src/acom.h
++++ tempo/src/acom.h
 @@ -81,7 +81,7 @@ c      $Id$
       +                  xmxuse(NXMXMAX),
       +                  xmxfrq0, usexmxfrq0, nxmx
@@ -20,8 +22,10 @@ Description: Increase variables for path
  
          common/acomch/psrname,pardir,obsflag,infotxt,obskey(NOBSMAX),
       +    eclcon,dcovfile,
---- tempo-0.0~git20180809.502e643.orig/src/arrtim.f
-+++ tempo-0.0~git20180809.502e643/src/arrtim.f
+Index: tempo/src/arrtim.f
+===================================================================
+--- tempo.orig/src/arrtim.f
++++ tempo/src/arrtim.f
 @@ -23,14 +23,14 @@ C  DJN 18-Aug-92  Allow up to 36 sites
          integer wflag
          integer nread
@@ -39,8 +43,10 @@ Description: Increase variables for path
          character*80 tmp
          character*640 rawflags
  	include 'acom.h'
---- tempo-0.0~git20180809.502e643.orig/src/bootmc.f
-+++ tempo-0.0~git20180809.502e643/src/bootmc.f
+Index: tempo/src/bootmc.f
+===================================================================
+--- tempo.orig/src/bootmc.f
++++ tempo/src/bootmc.f
 @@ -15,7 +15,7 @@ C  See Numerical Recipes, Second Edition
  	real*8 fl1(NPAP1),fl2(NPAP1),fh1(NPAP1),fh2(NPAP1)
  	integer mfit(NPAP1)
@@ -50,8 +56,10 @@ Description: Increase variables for path
  	logical lw,first
  	data lw/.false./,first/.true./,idum/-999/
  
---- tempo-0.0~git20180809.502e643.orig/src/cfgin.f
-+++ tempo-0.0~git20180809.502e643/src/cfgin.f
+Index: tempo/src/cfgin.f
+===================================================================
+--- tempo.orig/src/cfgin.f
++++ tempo/src/cfgin.f
 @@ -19,7 +19,7 @@ c     output parameters
        character*(*) ut1file, obsyfile, tdbfile
  
@@ -61,8 +69,10 @@ Description: Increase variables for path
        character*640 key, val
        integer vall, err
        integer i, j, k
---- tempo-0.0~git20180809.502e643.orig/src/clocks.h
-+++ tempo-0.0~git20180809.502e643/src/clocks.h
+Index: tempo/src/clocks.h
+===================================================================
+--- tempo.orig/src/clocks.h
++++ tempo/src/clocks.h
 @@ -1,5 +1,5 @@
  c      $Id$
 -        character clkfile(NCLKMAX)*80, clklbl(0:NCLKMAX)*32,clkdir*80
@@ -70,8 +80,10 @@ Description: Increase variables for path
  	integer ckflag(NPT)
  
  	common/clocks/ tdate(NPT),ckcorr(NPT),jsite(NPT),ndate,nclk,
---- tempo-0.0~git20180809.502e643.orig/src/eph.h
-+++ tempo-0.0~git20180809.502e643/src/eph.h
+Index: tempo/src/eph.h
+===================================================================
+--- tempo.orig/src/eph.h
++++ tempo/src/eph.h
 @@ -1,5 +1,5 @@
  c      $Id$
 -	character*80 ephdir,ephfile(NEPHMAX),ephname(NEPHMAX)
@@ -79,8 +91,10 @@ Description: Increase variables for path
          integer ephnamel(NEPHMAX)
          logical ephbigendian(NEPHMAX)
          integer kephem, nephem
---- tempo-0.0~git20180809.502e643.orig/src/ephinit.f
-+++ tempo-0.0~git20180809.502e643/src/ephinit.f
+Index: tempo/src/ephinit.f
+===================================================================
+--- tempo.orig/src/ephinit.f
++++ tempo/src/ephinit.f
 @@ -17,7 +17,7 @@ c     DJN 29 July 1997
  
  c     inputs:
@@ -90,8 +104,10 @@ Description: Increase variables for path
        logical ephbigendian
        logical bigendian
        integer nrecl
---- tempo-0.0~git20180809.502e643.orig/src/fit.f
-+++ tempo-0.0~git20180809.502e643/src/fit.f
+Index: tempo/src/fit.f
+===================================================================
+--- tempo.orig/src/fit.f
++++ tempo/src/fit.f
 @@ -30,7 +30,7 @@ c       moved declaration of real*8 arra
          real*8 buf(*)
          integer npmsav(*), ksav(*)
@@ -101,8 +117,10 @@ Description: Increase variables for path
  
          integer isetflag
  
---- tempo-0.0~git20180809.502e643.orig/src/glsfit.f
-+++ tempo-0.0~git20180809.502e643/src/glsfit.f
+Index: tempo/src/glsfit.f
+===================================================================
+--- tempo.orig/src/glsfit.f
++++ tempo/src/glsfit.f
 @@ -30,7 +30,7 @@ c       moved declaration of real*8 arra
          real*8 buf(*)
          integer npmsav(*), ksav(*)
@@ -112,8 +130,10 @@ Description: Increase variables for path
  
          integer isetflag
  
---- tempo-0.0~git20180809.502e643.orig/src/setup.f
-+++ tempo-0.0~git20180809.502e643/src/setup.f
+Index: tempo/src/setup.f
+===================================================================
+--- tempo.orig/src/setup.f
++++ tempo/src/setup.f
 @@ -8,8 +8,8 @@ c       $Id$
          include 'version.h'
  	real*8 alng(NOBSMAX)
@@ -125,8 +145,10 @@ Description: Increase variables for path
          character*(*) obsyfile
          character*640 tpocmd
          character*5 obskey0
---- tempo-0.0~git20180809.502e643.orig/src/tdbinit.f
-+++ tempo-0.0~git20180809.502e643/src/tdbinit.f
+Index: tempo/src/tdbinit.f
+===================================================================
+--- tempo.orig/src/tdbinit.f
++++ tempo/src/tdbinit.f
 @@ -16,7 +16,7 @@ c     DJN 19 August 1997
  
  c     inputs:
@@ -136,8 +158,10 @@ Description: Increase variables for path
  
        integer nfl
  
---- tempo-0.0~git20180809.502e643.orig/src/tdbinit2.f
-+++ tempo-0.0~git20180809.502e643/src/tdbinit2.f
+Index: tempo/src/tdbinit2.f
+===================================================================
+--- tempo.orig/src/tdbinit2.f
++++ tempo/src/tdbinit2.f
 @@ -22,7 +22,7 @@ c     DJN 30 July 2004; based on tdbinit
  
  c     inputs:
@@ -147,8 +171,10 @@ Description: Increase variables for path
  
        integer nfl
  
---- tempo-0.0~git20180809.502e643.orig/src/tempo.f
-+++ tempo-0.0~git20180809.502e643/src/tempo.f
+Index: tempo/src/tempo.f
+===================================================================
+--- tempo.orig/src/tempo.f
++++ tempo/src/tempo.f
 @@ -145,15 +145,15 @@ C  99	gro.99			newval
          include 'toa.h'
  
@@ -173,8 +199,10 @@ Description: Increase variables for path
  	character date*9,date2*9,damoyr*9,label*12,parfile*160
  	integer time
          real*8 xmean(NPA),alng(NOBSMAX)
---- tempo-0.0~git20180809.502e643.orig/src/tparin.f
-+++ tempo-0.0~git20180809.502e643/src/tparin.f
+Index: tempo/src/tparin.f
+===================================================================
+--- tempo.orig/src/tparin.f
++++ tempo/src/tparin.f
 @@ -21,12 +21,12 @@ c     following variables are set in thi
        integer lpth
        integer nparmax, nptsmax
@@ -194,8 +222,10 @@ Description: Increase variables for path
        character*160 key
        character*160 val
        integer err
---- tempo-0.0~git20180809.502e643.orig/src/tpohdr.f
-+++ tempo-0.0~git20180809.502e643/src/tpohdr.f
+Index: tempo/src/tpohdr.f
+===================================================================
+--- tempo.orig/src/tpohdr.f
++++ tempo/src/tpohdr.f
 @@ -4,7 +4,7 @@ c      $Id$
  
  
@@ -205,8 +235,10 @@ Description: Increase variables for path
  	character*12 zname
  	logical oldpar
  
---- tempo-0.0~git20180809.502e643.orig/src/tz.h
-+++ tempo-0.0~git20180809.502e643/src/tz.h
+Index: tempo/src/tz.h
+===================================================================
+--- tempo.orig/src/tz.h
++++ tempo/src/tz.h
 @@ -1,8 +1,8 @@
  c      $Id$
 -       character tzdir*80,tzfile*80,tztfile*80,tzsite*80
@@ -218,8 +250,10 @@ Description: Increase variables for path
         character name(NTZMAX)*12,pname*12,params(6)*80
         integer ntzsite,ntzrsite
         integer nsp(NTZMAX),nco(NTZMAX)
---- tempo-0.0~git20180809.502e643.orig/src/tzinit.f
-+++ tempo-0.0~git20180809.502e643/src/tzinit.f
+Index: tempo/src/tzinit.f
+===================================================================
+--- tempo.orig/src/tzinit.f
++++ tempo/src/tzinit.f
 @@ -7,7 +7,7 @@ c      $Id$
          include 'acom.h'
  
@@ -229,8 +263,10 @@ Description: Increase variables for path
  	character line*80,item*40
  	character*5 obskey0
  	real*8 maxhadef
---- tempo-0.0~git20180809.502e643.orig/util/avtime/avtime.f
-+++ tempo-0.0~git20180809.502e643/util/avtime/avtime.f
+Index: tempo/util/avtime/avtime.f
+===================================================================
+--- tempo.orig/util/avtime/avtime.f
++++ tempo/util/avtime/avtime.f
 @@ -29,7 +29,7 @@ c     confused by "PHAS" statements--can
        real*8 err
        real*8 ct,dtp,phase,period,fdop
@@ -240,8 +276,10 @@ Description: Increase variables for path
        character*80 card
        character*80 fmtstring
        integer i, ii, j, idx, nargs, nmid
---- tempo-0.0~git20180809.502e643.orig/util/lk/lk.f
-+++ tempo-0.0~git20180809.502e643/util/lk/lk.f
+Index: tempo/util/lk/lk.f
+===================================================================
+--- tempo.orig/util/lk/lk.f
++++ tempo/util/lk/lk.f
 @@ -5,7 +5,7 @@
  	real*8 rct(maxpts),rphase(maxpts),resid1(maxpts),resid2(maxpts),
       +    xindex(maxpts),dayofyr(maxpts)
